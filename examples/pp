@@ -1,0 +1,67 @@
+int* hf(int* input, int brpolja)
+{
+    int* output;
+    int i;
+    
+    //while (i <= brpolja && bre==1){
+        output = input;
+        //printf (output);
+    //}
+    return output;
+    
+}
+
+// Formirano je 4,096 work-group sa po 256 work-items (4,096*256=1,048,576 tj. 2na20)
+// work-group velicina =256 (work-items). Definisano u clojure. (enq-nd! cqueue reduction-scalar (work-size [num-items] [workgroup-size (=256 mi smo definisali)]) nil profile-event)
+__kernel void reduction_scalar(__global int* data,
+                              __global int* brpolja,
+                              __local int* partial_sums,
+                              __local int* partial_podaci,
+                              __local int* x,                              
+                              __global int* output) {   
+   
+   int trenutno,i,j,bre,s,polja;        
+   int gid = get_global_id(0);
+   int lid = get_local_id(0);
+   int gsize = get_local_size(0);
+       
+   partial_podaci[lid] = data[get_global_id(0)];
+   polja=6;
+   //partial_sums[lid] = data[get_global_id(0)];
+   barrier(CLK_LOCAL_MEM_FENCE); 
+
+    //for (int i = gsize/2; i > 0; i --) {
+    //    if (lid < i) {    
+    //        partial_sums[lid] = partial_podaci[lid];          //sabiraju se samo one vrednosti koje su ispod polovine niza (da bi postojale vrednosti u drugoj polovini)
+    //    }
+    //    barrier(CLK_LOCAL_MEM_FENCE);   //Nakon svakog kruga barrier Prinudi svaki work-item da saceka dok svaki work-item, u okviru work-group, ne pristupi lokalnoj memoriji
+    //}
+
+                
+   for (int k=0; k<gsize; k++){
+     lid = get_local_id(0);
+     trenutno=partial_podaci[lid];   
+     s=polja; while (trenutno > 0){x[s] = trenutno%10; trenutno /= 10; s--;}      //rasclanjivanje broja na elemente
+    
+    bre=1;i=0;
+    while (i <= polja && bre==1){
+        for(j=i+1; j<=polja; j++){
+           if (!((x[i]==x[j]) || (abs(x[i]-x[j])==abs(i-j)))){
+               if (j == polja && i == polja-1) {
+                   //if (k==5) partial_sums[lid] = hf(partial_podaci[k], brpolja); //svaki 5-ti iz work-group
+                   //partial_sums[lid] = hf(partial_podaci[lid+5], brpolja);       //svaki 5-ti iz work-group
+                   //partial_sums[lid] = partial_podaci[k]; 
+                   partial_sums[lid] = 100000*x[1]+10000*x[2]+1000*x[3]+100*x[4]+10*x[5]+x[6];                  
+               }
+           }
+           else {bre=0;}
+        }
+    i++;}
+    
+   barrier(CLK_LOCAL_MEM_FENCE);     
+   }  
+    if(lid == 0) {
+        output[get_group_id(0)] = partial_sums[lid];        //Vraca vrednost pojedinacne work-group (Na kraju krajeva za svih 4,096 komada)
+    }
+    
+}
