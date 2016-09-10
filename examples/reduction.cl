@@ -39,7 +39,7 @@ __kernel void reduction_scalar(__global int* data,
         i++;}
         barrier(CLK_LOCAL_MEM_FENCE);     
    } 
-    
+
    if(lid == 0) {output[get_group_id(0)] = partial_sums[lid];}        //Vraca vrednost pojedinacne work-group (Na kraju krajeva za svih 1,024 komada)   
    //  if(lid == 0) {output[get_group_id(0)] = partial_podaci[lid];}
 }

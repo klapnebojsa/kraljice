@@ -18,23 +18,29 @@
 
 (set! *unchecked-math* true)
 ;(try 
- (with-release [;dev (nth  (sort-by-cl-version (devices (first (platforms)))) 0)
-                platformsone (first (platforms))                
+ (with-release [platformsone (first (platforms))                
                 dev0 (nth  (sort-by-cl-version (devices platformsone)) 0)
                 dev1 (nth  (sort-by-cl-version (devices platformsone)) 1)
                 platformstwo (second (platforms))                
                 dev3 (nth  (sort-by-cl-version (devices platformstwo)) 0)
                 
+                dev4 (first (filter #(= 1.2 (:version (opencl-c-version %)))
+                                  (devices (first (platforms)))))                
+                
                 ctx (context [dev0])
-                 cqueue (command-queue-1 ctx dev0 :profiling)
+                cqueue (command-queue-1 ctx dev0 :profiling)
+                
+                
                 ]
   
- (println "platforma 0" (vendor platformsone))
+ (println "platforma_0" (vendor platformsone))
  (println "   dev0: " (name-info dev0))  
  (println "   dev1: " (name-info dev1))
- (println "platforma 1" (vendor platformstwo))
- (println "   dev3: " (name-info dev3))  
-
+ (println "platforma_1" (vendor platformstwo))
+ (println "   dev3: " (name-info dev3))
+ (println "------------------------------------------------") 
+ (println "   dev4: " (name-info dev4))
+ 
   (facts
    (let [program-source
          (slurp (io/reader "examples/reduction.cl"))
