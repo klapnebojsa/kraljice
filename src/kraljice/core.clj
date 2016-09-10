@@ -27,9 +27,8 @@
                 dev4 (first (filter #(= 1.2 (:version (opencl-c-version %)))
                                   (devices (first (platforms)))))                
                 
-                ctx (context [dev0])
-                cqueue (command-queue-1 ctx dev0 :profiling)
-                
+                ctx (context [dev0])             
+                cqueue (command-queue-1 ctx dev0 :profiling)             
                 
                 ]
   
@@ -111,7 +110,7 @@
         (finish! cqueue)
         (println "Najosnovniji algoritam time:"
                  (-> (<!! notifications) :event profiling-info durations :end))
-       (println "    RESENJA____: " (disj (set (seq partial-output)) 0))        
+       ;(println "    RESENJA____: " (disj (set (seq partial-output)) 0))        
        ;(println "elemenata izlaza (" bytesize "=" num-items "*" Float/BYTES ") /" workgroup-size "=" (/ bytesize workgroup-size)) 
         (println "---------------KRAJ -------------------")   
         )       
