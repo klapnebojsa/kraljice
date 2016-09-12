@@ -98,7 +98,7 @@
         (enq-write! cqueue cl-brpolja brpolja) => cqueue        
         
         (enq-nd! cqueue reduction-scalar                       ;asinhrono izvrsava kernel u uredjaju. cqueue, kernel koji se izvrsava
-               (work-size [num-items]             ;[2na20]  sa ovim poljem vraca niz resenja (za svaki work-group posebno).
+               (work-size [num-items]             ;[2na16]  sa ovim poljem vraca niz resenja (za svaki work-group posebno).
                                                   ;ako ovo izbrisemo vraca resenje samo u prvom elementu niza tj. konacan zbir svih work-group 
                           [256]                  ;[256] 
                           )       
