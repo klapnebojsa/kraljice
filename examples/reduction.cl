@@ -17,7 +17,8 @@ __kernel void reduction_scalar(__global int* data,
    partial_podaci[lid] = data[gid];      
    int polja=brpolja[0];
    barrier(CLK_LOCAL_MEM_FENCE);
-    
+   
+   // 
    //printf("gid=%u lid=%u get_group_id(0)=%u partial_podaci[lid]=%u data[gid]=%u\n",  gid, lid, get_group_id(0), partial_podaci[lid], data[gid]); 
    
    int koji=0;int s=0;             
